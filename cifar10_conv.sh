@@ -8,8 +8,8 @@ python3 main.py \
   --data_path="." \
   --output_dir="outputs" \
   --n_classes=10 \
-  --train_steps=10000 \
-  --batch_size=32 \
-  --log_every=1000 \
+  --train_steps=10 \
+  --batch_size=2 \
+  --log_every=2 \
   "$@"
 

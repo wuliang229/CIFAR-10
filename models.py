@@ -34,7 +34,6 @@ def _naive_inference(images,
   with tf.variable_scope("naive", reuse=tf.AUTO_REUSE):
     w_soft = tf.get_variable("w", [H * W * C, n_outputs])
 
-  images = tf.reshape(images, [-1, H * W * C])
   logits = tf.matmul(images, w_soft)
 
   return logits
@@ -53,14 +52,29 @@ def _conv_inference(images,
   
   Note: any usage of tf.keras or tf.contrib.slim prebuilt layers is invalid. 
   """
+  H, W, C = (images.get_shape()[1].value, 
+             images.get_shape()[2].value, 
+             images.get_shape()[3].value)
+  kernel_sizes = [3]
+  num_channels = [5]
 
-  # TODO: implement CNN network and infer `images` to `logits`
+  x = images
+  for layer_id, (k_size, next_c) in enumerate(zip(kernel_sizes, num_channels)):
+    curr_c = x.get_shape()[-1].value
+    with tf.variable_scope("layer_{}".format(layer_id), reuse = tf.AUTO_REUSE):
+      w = tf.get_variable("w", [k_size, k_size, curr_c, next_c])
+    x = tf.nn.conv2d(x, w, padding = "SAME", strides = [1, 1, 1, 1])
+    x = tf.nn.relu(x)
 
-  logits = None
+  x = tf.reshape(x, [-1, H * W * 5])
+  curr_c = x.get_shape()[-1].value
+  with tf.variable_scope("logits", reuse=tf.AUTO_REUSE):
+    w = tf.get_variable("w", [curr_c, n_outputs])
+    logits = tf.matmul(x, w)
   return logits
 
 
-def _mlp_inference(input,
+def _mlp_inference(images,
                    is_train=True,
                    n_outputs=10):
   """
@@ -74,9 +88,22 @@ def _mlp_inference(input,
   Note: any usage of tf.keras or tf.contrib.slim prebuilt layers is invalid. 
   """
 
-  # TODO: implement MLP network and infer `images` to `logits`
+  H, W, C = (images.get_shape()[1].value, 
+             images.get_shape()[2].value, 
+             images.get_shape()[3].value)
+  dims = [256, 512, 128]
 
-  logits = None
+  x = tf.reshape(images, [-1, H * W * C]) # Flatten
+  for layer_id, next_dim in enumerate(dims):
+    curr_dim = x.get_shape()[-1].value
+    with tf.variable_scope("layer_{}".format(layer_id), reuse=tf.AUTO_REUSE):
+      w = tf.get_variable("w", [curr_dim, next_dim])
+    x = tf.matmul(x, w)
+    x = tf.nn.relu(x)
+  curr_dim = x.get_shape()[-1].value
+  with tf.variable_scope("logits", reuse=tf.AUTO_REUSE):
+    w = tf.get_variable("w", [curr_dim, n_outputs])
+    logits = tf.matmul(x, w)
   return logits
 
 
