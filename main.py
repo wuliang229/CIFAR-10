@@ -137,7 +137,6 @@ def get_eval_accuracy(ops, sess, step, name="val"):
 
       n_samples += len(pred_labels)
       top1_acc += np.sum(preds == pred_labels)
-      # top5_acc += np.sum(tf.math.in_top_k(indices, labels, 5))
       for i in range(len(indices)):
         top5_acc += pred_labels[i] in indices[i]
     except tf.errors.OutOfRangeError:

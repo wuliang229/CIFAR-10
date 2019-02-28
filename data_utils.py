@@ -115,7 +115,7 @@ def create_batch_tf_dataset(images, labels,
 
   # train dataset
   train_dataset = tf.data.Dataset.from_tensor_slices((images["train"], labels["train"]))
-  batched_train_dataset = train_dataset.shuffle(buffer_size).batch(batch_size).repeat()
+  batched_train_dataset = train_dataset.repeat().shuffle(buffer_size).batch(batch_size)
   
   # TODO: optionally preprocess and make it loop forever
 

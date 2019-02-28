@@ -34,6 +34,7 @@ def _naive_inference(images,
   with tf.variable_scope("naive", reuse=tf.AUTO_REUSE):
     w_soft = tf.get_variable("w", [H * W * C, n_outputs])
 
+  images = tf.reshape(images, [-1, H * W * C]) # Flatten
   logits = tf.matmul(images, w_soft)
 
   return logits
