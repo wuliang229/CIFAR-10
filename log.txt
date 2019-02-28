@@ -85,3 +85,53 @@ step=10000  top1 acc=0.799 top5 acc=0.989 against 5000 samples
 --------------------------------------------------------------------------------
 Training done. Eval on TEST set
 step=10000  top1 acc=0.793 top5 acc=0.989 against 10000 samples
+
+
+
+--------------------------------------------------------------------------------
+Path outputs exists. Remove and remake.
+--------------------------------------------------------------------------------
+batch_size....................................................................45
+data_path.......................................................................
+init_lr.....................................................................0.01
+log_every...................................................................1000
+model_name..................................................................conv
+n_classes.....................................................................10
+output_dir...............................................................outputs
+reset_output_dir............................................................True
+train_steps................................................................15000
+--------------------------------------------------------------------------------
+Reading data
+Reading:data_batch_1
+Reading:data_batch_2
+Reading:data_batch_3
+Reading:data_batch_4
+Reading:data_batch_5
+Reading:test_batch
+Prepropcess: [subtract mean], [divide std]
+mean: [125.34512 122.94169 113.83898]
+std: [63.02383 62.13708 66.74233]
+--------------------------------------------------------------------------------
+Creating a 'conv' model
+--------------------------------------------------------------------------------
+Starting session
+--------------------------------------------------------------------------------
+Starting training
+step=1000   top1 acc=0.593 top5 acc=0.953 against 5000 samples
+step=2000   top1 acc=0.668 top5 acc=0.970 against 5000 samples
+step=3000   top1 acc=0.718 top5 acc=0.977 against 5000 samples
+step=4000   top1 acc=0.761 top5 acc=0.983 against 5000 samples
+step=5000   top1 acc=0.773 top5 acc=0.987 against 5000 samples
+step=6000   top1 acc=0.791 top5 acc=0.988 against 5000 samples
+step=7000   top1 acc=0.801 top5 acc=0.990 against 5000 samples
+step=8000   top1 acc=0.807 top5 acc=0.989 against 5000 samples
+step=9000   top1 acc=0.808 top5 acc=0.991 against 5000 samples
+step=10000  top1 acc=0.818 top5 acc=0.990 against 5000 samples
+step=11000  top1 acc=0.822 top5 acc=0.990 against 5000 samples
+step=12000  top1 acc=0.820 top5 acc=0.990 against 5000 samples
+step=13000  top1 acc=0.825 top5 acc=0.992 against 5000 samples
+step=14000  top1 acc=0.829 top5 acc=0.991 against 5000 samples
+step=15000  top1 acc=0.829 top5 acc=0.993 against 5000 samples
+--------------------------------------------------------------------------------
+Training done. Eval on TEST set
+step=15000  top1 acc=0.821 top5 acc=0.991 against 10000 samples
