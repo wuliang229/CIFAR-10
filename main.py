@@ -5,6 +5,7 @@ from __future__ import print_function
 import os
 import shutil
 import sys
+import time
 
 import tensorflow as tf
 import numpy as np
@@ -94,7 +95,10 @@ def main(_):
 
       # train with number of steps (batches) defined above
       for step in range(1, FLAGS.train_steps + 1):
+        start_time = time.time()
         sess.run(ops["train_op"])
+        end_time = time.time()
+        print("Epoch {0} takes {1} seconds".format(step, end_time - start_time))
 
         # report periodically
         if step % FLAGS.log_every == 0:

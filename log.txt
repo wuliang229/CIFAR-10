@@ -25,8 +25,6 @@ std: [63.02383 62.13708 66.74233]
 Creating a 'mlp' model
 --------------------------------------------------------------------------------
 Starting session
-2019-02-27 21:26:35.968842: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
-2019-02-27 21:26:35.969258: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 12. Tune using inter_op_parallelism_threads for best performance.
 --------------------------------------------------------------------------------
 Starting training
 step=1000   top1 acc=0.427 top5 acc=0.887 against 5000 samples
@@ -42,3 +40,48 @@ step=10000  top1 acc=0.513 top5 acc=0.927 against 5000 samples
 --------------------------------------------------------------------------------
 Training done. Eval on TEST set
 step=10000  top1 acc=0.510 top5 acc=0.919 against 10000 samples
+
+
+
+--------------------------------------------------------------------------------
+Path outputs exists. Remove and remake.
+--------------------------------------------------------------------------------
+batch_size....................................................................32
+data_path.......................................................................
+init_lr.....................................................................0.01
+log_every...................................................................1000
+model_name..................................................................conv
+n_classes.....................................................................10
+output_dir...............................................................outputs
+reset_output_dir............................................................True
+train_steps................................................................10000
+--------------------------------------------------------------------------------
+Reading data
+Reading:data_batch_1
+Reading:data_batch_2
+Reading:data_batch_3
+Reading:data_batch_4
+Reading:data_batch_5
+Reading:test_batch
+Prepropcess: [subtract mean], [divide std]
+mean: [125.34512 122.94169 113.83898]
+std: [63.02383 62.13708 66.74233]
+--------------------------------------------------------------------------------
+Creating a 'conv' model
+--------------------------------------------------------------------------------
+Starting session
+--------------------------------------------------------------------------------
+Starting training
+step=1000   top1 acc=0.512 top5 acc=0.941 against 5000 samples
+step=2000   top1 acc=0.608 top5 acc=0.960 against 5000 samples
+step=3000   top1 acc=0.671 top5 acc=0.970 against 5000 samples
+step=4000   top1 acc=0.710 top5 acc=0.976 against 5000 samples
+step=5000   top1 acc=0.740 top5 acc=0.983 against 5000 samples
+step=6000   top1 acc=0.754 top5 acc=0.984 against 5000 samples
+step=7000   top1 acc=0.769 top5 acc=0.984 against 5000 samples
+step=8000   top1 acc=0.791 top5 acc=0.986 against 5000 samples
+step=9000   top1 acc=0.790 top5 acc=0.988 against 5000 samples
+step=10000  top1 acc=0.799 top5 acc=0.989 against 5000 samples
+--------------------------------------------------------------------------------
+Training done. Eval on TEST set
+step=10000  top1 acc=0.793 top5 acc=0.989 against 10000 samples

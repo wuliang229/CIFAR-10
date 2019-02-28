@@ -1,6 +1,7 @@
 import tensorflow as tf
 
 from data_utils import create_batch_tf_dataset
+from image_ops import batch_norm
 
 SEED = 12345678
 
@@ -56,18 +57,56 @@ def _conv_inference(images,
   H, W, C = (images.get_shape()[1].value, 
              images.get_shape()[2].value, 
              images.get_shape()[3].value)
-  kernel_sizes = [3]
-  num_channels = [5]
 
   x = images
-  for layer_id, (k_size, next_c) in enumerate(zip(kernel_sizes, num_channels)):
-    curr_c = x.get_shape()[-1].value
-    with tf.variable_scope("layer_{}".format(layer_id), reuse = tf.AUTO_REUSE):
-      w = tf.get_variable("w", [k_size, k_size, curr_c, next_c])
+  # for layer_id, (k_size, next_c) in enumerate(zip(kernel_sizes, num_channels)):
+
+    # curr_c = x.get_shape()[-1].value # number of channels
+  with tf.variable_scope("cnn", reuse = tf.AUTO_REUSE):
+
+    # 1
+    w = tf.get_variable("w1", [3, 3, 3, 32])
     x = tf.nn.conv2d(x, w, padding = "SAME", strides = [1, 1, 1, 1])
     x = tf.nn.relu(x)
+    x = batch_norm(x, is_train, name = "bn1") # BN
 
-  x = tf.reshape(x, [-1, H * W * 5])
+    # 2
+    w = tf.get_variable("w2", [3, 3, 32, 32])
+    x = tf.nn.conv2d(x, w, padding = "SAME", strides = [1, 1, 1, 1])
+    x = tf.nn.relu(x)
+    x = batch_norm(x, is_train, name = "bn2") # BN
+    x = tf.layers.max_pooling2d(x, 2, 2) # Pooling
+    x = tf.layers.dropout(x, rate=0.2, training=is_train) # Dropout
+
+    # 3
+    w = tf.get_variable("w3", [3, 3, 32, 64])
+    x = tf.nn.conv2d(x, w, padding = "SAME", strides = [1, 1, 1, 1])
+    x = tf.nn.relu(x)
+    x = batch_norm(x, is_train, name = "bn3") # BN
+
+    # 4
+    w = tf.get_variable("w4", [3, 3, 64, 64])
+    x = tf.nn.conv2d(x, w, padding = "SAME", strides = [1, 1, 1, 1])
+    x = tf.nn.relu(x)
+    x = batch_norm(x, is_train, name = "bn4") # BN
+    x = tf.layers.max_pooling2d(x, 2, 2) # Pooling
+    x = tf.layers.dropout(x, rate=0.3, training=is_train) # Dropout
+
+    # 5
+    w = tf.get_variable("w5", [3, 3, 64, 128])
+    x = tf.nn.conv2d(x, w, padding = "SAME", strides = [1, 1, 1, 1])
+    x = tf.nn.relu(x)
+    x = batch_norm(x, is_train, name = "bn5") # BN
+    
+    # 6
+    w = tf.get_variable("w6", [3, 3, 128, 128])
+    x = tf.nn.conv2d(x, w, padding = "SAME", strides = [1, 1, 1, 1])
+    x = tf.nn.relu(x)
+    x = batch_norm(x, is_train, name = "bn6") # BN
+    x = tf.layers.max_pooling2d(x, 2, 2) # Pooling
+    x = tf.layers.dropout(x, rate=0.4, training=is_train) # Dropout
+
+  x = tf.reshape(x, [-1, 4 * 4 * 128])
   curr_c = x.get_shape()[-1].value
   with tf.variable_scope("logits", reuse=tf.AUTO_REUSE):
     w = tf.get_variable("w", [curr_c, n_outputs])
