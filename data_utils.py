@@ -102,8 +102,6 @@ def create_batch_tf_dataset(images, labels,
                             buffer_size=10000,
                             ):
   """
-  TODO: you need to fill in this method  
-  
   Args:
     images: from read_data()
     labels: from read_data() 
@@ -114,16 +112,20 @@ def create_batch_tf_dataset(images, labels,
   Returns: 
     a dictionary containing 3 batched tf.data.Dataset objects 
   """
+
   # train dataset
-  train_dataset = tf.data.Dataset.from_tensor_slices()
+  train_dataset = tf.data.Dataset.from_tensor_slices((images["train"], labels["train"]))
+  batched_train_dataset = train_dataset.shuffle(buffer_size).batch(batch_size).repeat()
+  
   # TODO: optionally preprocess and make it loop forever
-  batched_train_dataset = None
 
   # val dataset
-  batched_val_dataset = None
+  val_dataset = tf.data.Dataset.from_tensor_slices((images["valid"], labels["valid"]))
+  batched_val_dataset = val_dataset.batch(batch_size)
 
   # test dataset
-  batched_test_dataset = None
+  test_dataset = tf.data.Dataset.from_tensor_slices((images["test"], labels["test"]))
+  batched_test_dataset = test_dataset.batch(batch_size)
 
   return {
     "train": batched_train_dataset,
@@ -134,7 +136,7 @@ def create_batch_tf_dataset(images, labels,
 
 if __name__ == "__main__":
   # sample test driver here
-  # make sure this runnable before moving on
+  # make sure this is runnable before moving on
   images, labels = read_data(".")
   dataset_dict = create_batch_tf_dataset(images, labels)
 

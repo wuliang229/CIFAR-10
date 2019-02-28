@@ -7,6 +7,7 @@ import shutil
 import sys
 
 import tensorflow as tf
+import numpy as np
 
 from data_utils import read_data
 from models import create_tf_ops
@@ -18,6 +19,8 @@ from utils import print_user_flags
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
+
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 DEFINE_boolean("reset_output_dir", False, "Delete output_dir if exists.")
 DEFINE_string("data_path", "", "Path to CIFAR-10 data")
@@ -68,8 +71,8 @@ def main(_):
 
   print_user_flags()
 
-  # data
-  images, labels = read_data(FLAGS.data_path)
+  # data: dictionary of numpy arrays
+  images, labels = read_data(FLAGS.data_path) 
 
   # computational graph
   g = tf.Graph()
@@ -104,17 +107,17 @@ def main(_):
 
 def get_eval_accuracy(ops, sess, step, name="val"):
   """
-  TODO: run the dataset initializer for 2 cases: val or test 
+  Run the dataset initializer for 2 cases: val or test 
 
   Then draw all possible batches to the end of that dataset 
   
   For each batch, compare the preds vs. labels (both taken from `ops`. Then 
-  we can finally calculate accuracies including top1  and top5   
+  we can finally calculate accuracies including top1 and top5   
   
   """
   if name == "val":
     sess.run(ops["val_iterator"])
-    preds_ops = ops["valid_preds"]
+    preds_ops = ops["val_preds"]
     top5_ops = ops["top5_val_preds"]
     labels = ops["val_labels"]
   else:
@@ -124,15 +127,29 @@ def get_eval_accuracy(ops, sess, step, name="val"):
     labels = ops["test_labels"]
 
 
-  # TODO: your code here
   n_samples = 0
   top1_acc = 0.0
   top5_acc = 0.0
-  # -------------
+
+  while True:
+    try:
+      preds, indices, pred_labels = sess.run([preds_ops, top5_ops[1], labels])
+
+      n_samples += len(pred_labels)
+      top1_acc += np.sum(preds == pred_labels)
+      # top5_acc += np.sum(tf.math.in_top_k(indices, labels, 5))
+      for i in range(len(indices)):
+        top5_acc += pred_labels[i] in indices[i]
+    except tf.errors.OutOfRangeError:
+      break
+
+
+  top1_acc = top1_acc / n_samples
+  top5_acc = top5_acc / n_samples
 
   log_string = ""
   log_string += "step={0:<6d}".format(step)
-  log_string += " top1 acc={0:.3f} top1 acc={0:.3f} against {1:<3d} " \
+  log_string += " top1 acc={0:.3f} top5 acc={1:.3f} against {2:<3d} " \
                 "samples".format(top1_acc, top5_acc, n_samples)
   print(log_string)
   sys.stdout.flush()
